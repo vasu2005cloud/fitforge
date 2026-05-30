@@ -376,7 +376,11 @@ function toggleVideo(btn, videoId) {
     btn.innerHTML = '▼ Hidden';
     btn.style.background = 'rgba(255,255,255,0.1)';
     btn.style.color = '#fff';
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    
+    if (iframe) {
+        const cleanId = videoId.split('?')[0].split('&')[0];
+        iframe.src = `https://www.youtube-nocookie.com/embed/${cleanId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+    }
   }
 }
 
@@ -395,7 +399,83 @@ function renderYogaPoses(poses, flow) {
   document.getElementById('yoga-count').textContent =
     `${poses.length} poses · ${flow}`;
   document.getElementById('yoga-list').innerHTML = poses.map((pose, i) => {
-    const videoId = pose.yt.includes('v=') ? pose.yt.split('v=')[1].split('&')[0] : '';
+    // Check if local video exists
+    if (pose.video) {
+        const poseId = `vid-${i}-${Math.floor(Math.random() * 1000)}`;
+        const videoSrc = `/static/videos/${encodeURIComponent(pose.video)}`;
+        
+        return `
+        <div class="exercise-card" style="border-top: 4px solid #a78bfa; animation-delay:${i * 0.05}s;">
+          <div class="ex-header">
+            <div>
+              <div class="ex-name" style="color:#a78bfa;">${pose.name}</div>
+              <div style="font-size:13px;color:var(--muted);margin-top:6px;font-weight:500;">⏱ ${pose.duration}</div>
+            </div>
+          </div>
+          <div class="ex-badges">
+            <span class="badge diff-${pose.diff}">${pose.diff}</span>
+          </div>
+          <div class="ex-desc" style="margin-top:16px;">${pose.desc}</div>
+          <div class="ex-actions">
+            <button 
+              class="btn btn-primary"
+              onclick="
+                var v = document.getElementById('${poseId}');
+                if(v.style.display === 'none'){
+                  v.style.display = 'block';
+                  this.innerHTML = '▼ Hide Video';
+                } else {
+                  v.style.display = 'none';
+                  v.querySelector('video').pause();
+                  this.innerHTML = '▶ Tutorial';
+                }
+              "
+              style="
+                background: transparent;
+                border: 1px solid rgba(255,255,255,0.2);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: 600;
+                margin-top: 10px;
+              ">
+              ▶ Tutorial
+            </button>
+          </div>
+          <div class="pose-video-wrap" id="${poseId}" style="display:none; margin-top:12px;">
+            <video 
+              width="100%" 
+              height="220"
+              controls
+              preload="none"
+              style="
+                border-radius: 12px;
+                background: #000;
+                display: block;
+                width: 100%;
+                height: 220px;
+                object-fit: cover;
+              ">
+              <source src="${videoSrc}" type="video/mp4">
+              <p style="color:#888; text-align:center; padding:20px;">Video not available.</p>
+            </video>
+          </div>
+        </div>`;
+    }
+
+    // Fallback for poses that only have YouTube (like sequences)
+    let videoId = '';
+    if (pose.yt) {
+        if (pose.yt.includes('embed/')) videoId = pose.yt.split('embed/')[1].split('?')[0];
+        else if (pose.yt.includes('v=')) videoId = pose.yt.split('v=')[1].split('&')[0];
+        else if (pose.yt.length === 11) videoId = pose.yt;
+    }
+    
+    const ytLink = `https://www.youtube.com/watch?v=${videoId}`;
+    const embedUrl = `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
+
     return `
     <div class="exercise-card" style="border-top: 4px solid #a78bfa; animation-delay:${i * 0.05}s;">
       <div class="ex-header">
@@ -410,12 +490,31 @@ function renderYogaPoses(poses, flow) {
       <div class="ex-desc" style="margin-top:16px;">${pose.desc}</div>
       <div class="ex-actions">
         <button class="btn btn-outline video-toggle" onclick="toggleVideo(this, '${videoId}')" style="padding:10px 16px;">
-          ▶ Watch
+          ▶ Tutorial
         </button>
       </div>
-      <div class="video-dropdown" style="display:none;">
-        <div class="video-container">
-          <iframe id="yt-${videoId}" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+      <div class="video-dropdown" style="display:none; padding-top:20px;">
+        <iframe 
+          id="yt-${videoId}"
+          src="" 
+          data-src="${embedUrl}"
+          width="100%"
+          height="220"
+          style="border-radius:12px;border:none;display:block;"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        ></iframe>
+        
+        <div class="video-error-fallback" style="display:none; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; text-align: center; color: #888; font-size: 14px;">
+           ▶ <a href="${ytLink}" target="_blank" style="color:#ff4757;text-decoration:none;font-weight:600;">Watch on YouTube</a>
+        </div>
+
+        <div style="margin-top:16px; text-align:center;">
+          <a href="${ytLink}" target="_blank" rel="noopener" class="yt-link-btn" style="text-decoration:none;">
+            ▶ Watch on YouTube
+          </a>
         </div>
       </div>
     </div>`;

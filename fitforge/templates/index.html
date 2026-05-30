@@ -1,402 +1,467 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>IRONBUDDY | AI Fitness Coach</title>
-<link rel="stylesheet" href="/static/css/style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚡ IronBuddy | AI Fitness Coach</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
 </head>
+
 <body>
 
-<!-- AMBIENT GLOW -->
-<div class="glow-bg"></div>
-<div class="glow-bg2"></div>
+  <!-- ENHANCED BACKGROUND -->
+  <div class="glow-bg"></div>
+  <div class="glow-bg2"></div>
+  <div class="animated-particles"></div>
 
-<!-- ═══════════════════ ONBOARDING ═══════════════════ -->
-<div id="onboarding" class="page-wrap">
-  <nav class="nav">
-    <div class="nav-logo">⚡ IRON<span>BUDDY</span></div>
-  </nav>
-  <div class="page" style="max-width:540px;padding-top:40px;">
-    <div style="margin-bottom:32px;">
-      <span class="tag tag-accent">Premium AI Coach</span>
-      <h1 class="hero-heading" style="margin-top:16px;">BUILD YOUR<br><span>LEGACY</span></h1>
-      <p class="hero-sub">Enter your details to generate a personalized diet and training program powered by AI.</p>
-    </div>
-    <div class="card">
-      <div class="form-group">
-        <label class="form-label">Full Name</label>
-        <input class="form-input" type="text" id="inp-name" placeholder="John Doe" />
+  <!-- ═══════════════════ ONBOARDING ═══════════════════ -->
+  <div id="onboarding" class="page-wrap">
+    <nav class="nav">
+      <div class="nav-logo">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text">Iron<span>Buddy</span></div>
       </div>
-      
-      <div class="grid-2">
-        <div class="form-group">
-          <label class="form-label">Gender</label>
-          <div class="radio-tile-group">
-            <div class="radio-tile">
-              <input type="radio" id="g-male" name="gender" value="Male" checked />
-              <label for="g-male"><span class="icon">👨</span>Male</label>
+    </nav>
+
+    <div class="page" style="max-width:600px;padding-top:60px;">
+      <div class="onboarding-header">
+        <div class="badge-container">
+          <span class="badge badge-primary">🚀 Premium AI Coach</span>
+          <span class="badge badge-secondary">✨ Personalized Plans</span>
+        </div>
+
+        <h1 class="hero-heading">Build Your <span>Legacy</span></h1>
+        <p class="hero-sub">Transform your fitness journey with AI-powered personalized plans designed just for you.</p>
+
+        <div class="form-section">
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-icon">👤</span>
+              Full Name
+            </label>
+            <input class="form-input" type="text" id="inp-name" placeholder="Enter your full name" />
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <div class="radio-tile-group">
+                <div class="radio-tile">
+                  <input type="radio" id="g-male" name="gender" value="Male" checked />
+                  <label for="g-male"><span class="icon">👨</span>Male</label>
+                </div>
+                <div class="radio-tile">
+                  <input type="radio" id="g-female" name="gender" value="Female" />
+                  <label for="g-female"><span class="icon">👩</span>Female</label>
+                </div>
+              </div>
             </div>
-            <div class="radio-tile">
-              <input type="radio" id="g-female" name="gender" value="Female" />
-              <label for="g-female"><span class="icon">👩</span>Female</label>
+            <div class="form-group">
+              <label class="form-label">Age (years)</label>
+              <input class="form-input" type="number" id="inp-age" placeholder="25" min="10" max="100" />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Weight (kg)</label>
+              <input class="form-input" type="number" id="inp-weight" placeholder="70" min="30" max="300" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Height (cm)</label>
+              <input class="form-input" type="number" id="inp-height" placeholder="175" min="100" max="250" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Primary Goal</label>
+            <select class="form-select" id="inp-goal">
+              <option value="Weight Loss">Weight Loss</option>
+              <option value="Muscle Gain" selected>Muscle Gain</option>
+              <option value="Maintenance">Maintenance</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom:32px;">
+            <label class="form-label">Diet Preference</label>
+            <div class="radio-tile-group">
+              <div class="radio-tile">
+                <input type="radio" id="d-veg" name="diet" value="Veg" checked />
+                <label for="d-veg"><span class="icon">🥦</span>Veg</label>
+              </div>
+              <div class="radio-tile">
+                <input type="radio" id="d-nonveg" name="diet" value="Non-Veg" />
+                <label for="d-nonveg"><span class="icon">🥩</span>Non-Veg</label>
+              </div>
+              <div class="radio-tile">
+                <input type="radio" id="d-jain" name="diet" value="Jain" />
+                <label for="d-jain"><span class="icon">🥗</span>Jain</label>
+              </div>
+            </div>
+          </div>
+
+          <div id="form-error" class="error-msg" style="display:none;"></div>
+          <button class="btn btn-primary" id="btn-submit">Generate My Plan →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ MAIN APP ═══════════════════ -->
+    <div id="main-app" class="page-wrap" style="display:none;">
+
+      <!-- NAV -->
+      <nav class="nav">
+        <div class="nav-logo">⚡ IRON<span>BUDDY</span></div>
+        <div class="nav-tabs">
+          <button class="nav-tab active" data-tab="diet">🥗 Diet</button>
+          <button class="nav-tab" data-tab="workout">🏋️ Workout</button>
+          <button class="nav-tab" data-tab="yoga-home">🧘 Yoga & Home</button>
+          <button class="nav-tab" data-tab="tracker">📅 Tracker</button>
+          <button class="nav-tab" data-tab="profile">👤 Profile</button>
+        </div>
+        <div class="profile-chip" onclick="switchTab('profile')">
+          <div class="profile-avatar" id="nav-initial">U</div>
+          <span id="chip-label">John · 70kg</span>
+        </div>
+      </nav>
+
+      <!-- ── DIET TAB ── -->
+      <div id="tab-diet" class="tab-page page">
+        <span class="tag tag-accent">Nutrition</span>
+        <div class="section-title" style="margin-top:12px;">DAILY MEAL PLAN</div>
+        <div id="diet-loading" class="loading">
+          <div class="spinner"></div>
+          <div class="loading-text" style="font-weight:500;">AI formulating your optimal macros...</div>
+        </div>
+
+        <div id="diet-content" style="display:none;">
+          <div class="bmi-ring" id="bmi-strip"></div>
+          <div class="stat-row" id="macro-row"></div>
+
+          <div class="grid-2">
+            <div style="display:flex;flex-direction:column;gap:16px;" id="meals-container"></div>
+            <div>
+              <!-- Tip -->
+              <div class="card" id="diet-tip" style="margin-bottom:16px;">
+                <div
+                  style="font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:8px;">
+                  💡 Coach's Tip</div>
+                <div id="tip-text" style="font-size:14px;color:var(--text);line-height:1.7;"></div>
+              </div>
+
+              <!-- Water tracker -->
+              <div class="card" id="water-card">
+                <div class="card-title"><span class="icon">💧</span> Hydration</div>
+                <div class="water-sub" id="water-sub" style="font-size:14px;color:var(--muted);margin-bottom:16px;">
+                </div>
+                <div class="water-row" id="water-drops" style="font-size:28px;"></div>
+                <div id="water-counter"
+                  style="font-family:var(--font-head);font-weight:600;font-size:16px;color:var(--accent2);margin-top:12px;">
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Age (years)</label>
-          <input class="form-input" type="number" id="inp-age" placeholder="25" min="10" max="100" />
-        </div>
+        <div id="diet-error" class="error-msg" style="display:none;"></div>
       </div>
 
-      <div class="grid-2">
-        <div class="form-group">
-          <label class="form-label">Weight (kg)</label>
-          <input class="form-input" type="number" id="inp-weight" placeholder="70" min="30" max="300" />
+      <!-- ── WORKOUT TAB ── -->
+      <div id="tab-workout" class="tab-page page" style="display:none;">
+        <span class="tag tag-accent" style="margin-bottom:12px;">Hypertrophy Program</span>
+        <div
+          style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div class="section-title" style="margin:0;">WORKOUT DATABASE</div>
+          <button class="btn btn-primary" onclick="openTimer(90)" style="width:auto; padding:12px 24px;">⏱ Rest
+            Timer</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">Height (cm)</label>
-          <input class="form-input" type="number" id="inp-height" placeholder="175" min="100" max="250" />
+
+        <!-- MUSCLE DIAGRAM -->
+        <div class="body-map-container">
+          <!-- FRONT SVG -->
+          <svg viewBox="0 0 300 450" class="body-svg">
+            <text x="150" y="20" fill="var(--muted)" font-size="12" text-anchor="middle" font-family="var(--font-head)"
+              font-weight="700" letter-spacing="2">FRONT</text>
+
+            <g transform="translate(0, 30)">
+              <!-- Base Outline (Head + Torso Base) -->
+              <polygon points="135,20 165,20 170,50 150,70 130,50" class="body-bg-line" />
+              <polygon points="140,70 160,70 165,90 135,90" class="body-bg-line" />
+              <polygon points="108,215 192,215 170,250 130,250" class="body-bg-line" />
+
+              <!-- Chest -->
+              <polygon points="148,95 100,95 90,130 148,140" class="muscle-group" data-day="Chest" />
+              <polygon points="152,95 200,95 210,130 152,140" class="muscle-group" data-day="Chest" />
+
+              <!-- Core -->
+              <polygon points="148,145 95,145 105,210 148,220" class="muscle-group" data-day="Core" />
+              <polygon points="152,145 205,145 195,210 152,220" class="muscle-group" data-day="Core" />
+
+              <!-- Shoulders -->
+              <polygon points="95,95 70,110 60,140 85,130" class="muscle-group" data-day="Shoulders" />
+              <polygon points="205,95 230,110 240,140 215,130" class="muscle-group" data-day="Shoulders" />
+
+              <!-- Arms (Biceps) -->
+              <polygon points="80,135 55,145 50,180 75,175" class="muscle-group" data-day="Arms" />
+              <polygon points="220,135 245,145 250,180 225,175" class="muscle-group" data-day="Arms" />
+
+              <!-- Forearms -->
+              <polygon points="72,185 48,190 40,240 60,235" class="muscle-group" data-day="Arms" />
+              <polygon points="228,185 252,190 260,240 240,235" class="muscle-group" data-day="Arms" />
+
+              <!-- Quads (Legs) -->
+              <polygon points="105,220 148,225 140,320 110,320 90,260" class="muscle-group" data-day="Legs" />
+              <polygon points="195,220 152,225 160,320 190,320 210,260" class="muscle-group" data-day="Legs" />
+
+              <!-- Calves (Legs) -->
+              <polygon points="138,330 112,330 115,420 135,420" class="muscle-group" data-day="Legs" />
+              <polygon points="162,330 188,330 185,420 165,420" class="muscle-group" data-day="Legs" />
+            </g>
+          </svg>
+
+          <!-- BACK SVG -->
+          <svg viewBox="0 0 300 450" class="body-svg">
+            <text x="150" y="20" fill="var(--muted)" font-size="12" text-anchor="middle" font-family="var(--font-head)"
+              font-weight="700" letter-spacing="2">BACK</text>
+
+            <g transform="translate(0, 30)">
+              <!-- Base Outline -->
+              <polygon points="135,20 165,20 170,50 150,70 130,50" class="body-bg-line" />
+              <polygon points="140,70 160,70 165,90 135,90" class="body-bg-line" />
+              <!-- Glutes placeholder -->
+              <polygon points="110,215 190,215 195,260 150,270 105,260" class="body-bg-line" />
+
+              <!-- Back (Lats/Traps) -->
+              <polygon points="148,95 100,95 85,140 105,210 148,210" class="muscle-group" data-day="Back" />
+              <polygon points="152,95 200,95 215,140 195,210 152,210" class="muscle-group" data-day="Back" />
+
+              <!-- Shoulders -->
+              <polygon points="95,95 70,110 60,140 85,130" class="muscle-group" data-day="Shoulders" />
+              <polygon points="205,95 230,110 240,140 215,130" class="muscle-group" data-day="Shoulders" />
+
+              <!-- Triceps (Arms) -->
+              <polygon points="80,135 55,145 50,180 75,175" class="muscle-group" data-day="Arms" />
+              <polygon points="220,135 245,145 250,180 225,175" class="muscle-group" data-day="Arms" />
+              <polygon points="72,185 48,190 40,240 60,235" class="muscle-group" data-day="Arms" />
+              <polygon points="228,185 252,190 260,240 240,235" class="muscle-group" data-day="Arms" />
+
+              <!-- Hamstrings (Legs) -->
+              <polygon points="105,265 148,275 140,320 110,320 105,280" class="muscle-group" data-day="Legs" />
+              <polygon points="195,265 152,275 160,320 190,320 195,280" class="muscle-group" data-day="Legs" />
+
+              <!-- Calves (Legs) -->
+              <polygon points="138,330 112,330 115,420 135,420" class="muscle-group" data-day="Legs" />
+              <polygon points="162,330 188,330 185,420 165,420" class="muscle-group" data-day="Legs" />
+            </g>
+          </svg>
         </div>
+
+        <!-- Active Target Heading -->
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h2 id="active-muscle-title"
+            style="font-family:var(--font-head); font-weight:800; font-size:40px; color:var(--text); letter-spacing:-1px; margin:0; line-height:1;">
+            CHEST</h2>
+          <div
+            style="font-size:14px; color:var(--accent); font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-top:4px;">
+            Currently Targeted</div>
+        </div>
+
+        <!-- Equipment Filters -->
+        <div class="filter-row" id="equip-filters">
+          <button class="active" data-equip="All">All Types</button>
+          <button data-equip="Barbell">Barbell</button>
+          <button data-equip="Dumbbell">Dumbbell</button>
+          <button data-equip="Machine">Machine</button>
+          <button data-equip="Bodyweight">Bodyweight</button>
+        </div>
+
+        <div id="ex-count" style="color:var(--muted);font-size:14px;margin-bottom:16px;font-weight:500;"></div>
+
+        <div id="exercise-list" class="grid-2"></div>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Primary Goal</label>
-        <select class="form-select" id="inp-goal">
-          <option value="Weight Loss">Weight Loss</option>
-          <option value="Muscle Gain" selected>Muscle Gain</option>
-          <option value="Maintenance">Maintenance</option>
-        </select>
-      </div>
+      <!-- ── YOGA & HOME WORKOUT TAB ── -->
+      <div id="tab-yoga-home" class="tab-page page" style="display:none;">
+        <span class="tag tag-accent" style="margin-bottom:12px;">No Equipment</span>
+        <div class="section-title" style="margin:0; margin-bottom:24px;">FLEXIBILITY & HIIT</div>
 
-      <div class="form-group" style="margin-bottom:32px;">
-        <label class="form-label">Diet Preference</label>
-        <div class="radio-tile-group">
-          <div class="radio-tile">
-            <input type="radio" id="d-veg" name="diet" value="Veg" checked />
-            <label for="d-veg"><span class="icon">🥦</span>Veg</label>
+        <div class="tabs-row" id="yoga-mode-tabs">
+          <button class="active" data-mode="yoga">🧘 Yoga Flows</button>
+          <button data-mode="home">🏠 Home HIIT</button>
+        </div>
+
+        <div id="yoga-section">
+          <div class="filter-row" id="yoga-tabs">
+            <button class="active" data-flow="Morning Flow">🌅 Morning Flow</button>
+            <button data-flow="Flexibility">🤸 Flexibility</button>
+            <button data-flow="Strength Yoga">💪 Strength</button>
+            <button data-flow="Relaxation">😌 Relaxation</button>
           </div>
-          <div class="radio-tile">
-            <input type="radio" id="d-nonveg" name="diet" value="Non-Veg" />
-            <label for="d-nonveg"><span class="icon">🥩</span>Non-Veg</label>
+          <div id="yoga-count" style="color:var(--muted);font-size:14px;margin-bottom:16px;font-weight:500;"></div>
+          <div id="yoga-list" class="grid-2"></div>
+        </div>
+
+        <div id="home-section" style="display:none;">
+          <div class="filter-row" id="home-tabs">
+            <button class="active" data-category="Full Body HIIT">🔥 Full Body</button>
+            <button data-category="Core Crusher">🎯 Core</button>
+            <button data-category="Upper Body">💪 Upper</button>
+            <button data-category="Lower Body">🦵 Lower</button>
+            <button data-category="Cardio Blast">🏃 Cardio</button>
           </div>
-          <div class="radio-tile">
-            <input type="radio" id="d-jain" name="diet" value="Jain" />
-            <label for="d-jain"><span class="icon">🥗</span>Jain</label>
+          <div id="home-count" style="color:var(--muted);font-size:14px;margin-bottom:16px;font-weight:500;"></div>
+          <div id="home-list" class="grid-2"></div>
+        </div>
+      </div>
+
+      <!-- ── TRACKER TAB ── -->
+      <div id="tab-tracker" class="tab-page page" style="display:none;">
+        <span class="tag tag-accent">Habits</span>
+        <div class="section-title" style="margin-top:12px;">PROGRESS TRACKER</div>
+        <div class="stat-row" id="tracker-stats"></div>
+
+        <div class="grid-2">
+          <!-- Calendar -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
+              <button style="background:none; border:none; color:var(--text); cursor:pointer; font-size:24px;"
+                onclick="changeMonth(-1)">‹</button>
+              <div style="font-family:var(--font-head); font-weight:700; font-size:20px;" id="cal-month-label"></div>
+              <button style="background:none; border:none; color:var(--text); cursor:pointer; font-size:24px;"
+                onclick="changeMonth(1)">›</button>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align:center; font-size:12px; color:var(--muted); font-weight:600; margin-bottom:12px;"
+              id="cal-days-header">
+              <div>Sun</div>
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;" id="cal-grid"></div>
+            <div style="margin-top:24px;font-size:12px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;">
+              <span style="display:flex;align-items:center;gap:6px;"><span
+                  style="width:12px;height:12px;background:rgba(57,255,20,.2);border:1px solid var(--accent);border-radius:4px;display:inline-block;"></span>Workout
+                Done</span>
+              <span style="display:flex;align-items:center;gap:6px;"><span
+                  style="width:12px;height:12px;border:1px solid rgba(255,255,255,.3);border-radius:4px;display:inline-block;"></span>Today</span>
+            </div>
+          </div>
+
+          <!-- Goals -->
+          <div class="card">
+            <div class="card-title">🎯 Weekly Target</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <span style="font-size:15px;color:var(--muted);">Target Workouts</span>
+              <span style="font-family:var(--font-head); font-size:24px; color:var(--accent);"
+                id="goal-display">4</span>
+            </div>
+
+            <div
+              style="background:rgba(255,255,255,0.05); border-radius:999px; height:16px; overflow:hidden; border:1px solid var(--border); margin:16px 0;">
+              <div id="goal-fill"
+                style="height:100%; background:linear-gradient(90deg, var(--accent2), var(--accent)); transition:width .6s; width:0%;">
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);">
+              <span id="goal-pct" style="font-weight:600; color:var(--text);">0% complete</span>
+              <span id="goal-fraction">0/4 done</span>
+            </div>
+
+            <hr style="border:none; border-top:1px solid var(--border); margin:32px 0;" />
+
+            <label class="form-label" style="margin-bottom:16px;">Adjust Requirement</label>
+            <input type="range" min="1" max="7" value="4" id="goal-slider"
+              style="-webkit-appearance:none; width:100%; height:6px; background:var(--border); border-radius:3px; outline:none;"
+              oninput="updateGoalUI(this.value)" onchange="saveGoal(this.value)" />
+            <div
+              style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:12px;font-family:var(--font-head);">
+              <span>1 day</span><span>7 days</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="form-error" class="error-msg" style="display:none;"></div>
-      <button class="btn btn-primary" id="btn-submit">Generate My Plan →</button>
-    </div>
-  </div>
-</div>
+      <!-- ── PROFILE TAB ── -->
+      <div id="tab-profile" class="tab-page page" style="display:none;">
+        <span class="tag tag-accent">Settings</span>
+        <div class="section-title" style="margin-top:12px;">YOUR PROFILE</div>
 
-<!-- ═══════════════════ MAIN APP ═══════════════════ -->
-<div id="main-app" class="page-wrap" style="display:none;">
-
-  <!-- NAV -->
-  <nav class="nav">
-    <div class="nav-logo">⚡ IRON<span>BUDDY</span></div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" data-tab="diet">🥗 Diet</button>
-      <button class="nav-tab" data-tab="workout">🏋️ Workout</button>
-      <button class="nav-tab" data-tab="yoga-home">🧘 Yoga & Home</button>
-      <button class="nav-tab" data-tab="tracker">📅 Tracker</button>
-      <button class="nav-tab" data-tab="profile">👤 Profile</button>
-    </div>
-    <div class="profile-chip" onclick="switchTab('profile')">
-      <div class="profile-avatar" id="nav-initial">U</div>
-      <span id="chip-label">John · 70kg</span>
-    </div>
-  </nav>
-
-  <!-- ── DIET TAB ── -->
-  <div id="tab-diet" class="tab-page page">
-    <span class="tag tag-accent">Nutrition</span>
-    <div class="section-title" style="margin-top:12px;">DAILY MEAL PLAN</div>
-    <div id="diet-loading" class="loading">
-      <div class="spinner"></div>
-      <div class="loading-text" style="font-weight:500;">AI formulating your optimal macros...</div>
-    </div>
-    
-    <div id="diet-content" style="display:none;">
-      <div class="bmi-ring" id="bmi-strip"></div>
-      <div class="stat-row" id="macro-row"></div>
-
-      <div class="grid-2">
-        <div style="display:flex;flex-direction:column;gap:16px;" id="meals-container"></div>
-        <div>
-          <!-- Tip -->
-          <div class="card" id="diet-tip" style="margin-bottom:16px;">
-            <div style="font-size:12px;color:var(--accent);letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:8px;">💡 Coach's Tip</div>
-            <div id="tip-text" style="font-size:14px;color:var(--text);line-height:1.7;"></div>
+        <div class="card" style="margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:24px;margin-bottom:32px;">
+            <div
+              style="width:80px;height:80px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--bg);font-weight:800;font-family:var(--font-head);"
+              id="prof-initial">U</div>
+            <div>
+              <div style="font-family:var(--font-head);font-size:32px;line-height:1;" id="prof-name">User Name</div>
+              <div id="profile-sub" style="font-size:15px;color:var(--muted);margin-top:6px;"></div>
+            </div>
           </div>
-          
-          <!-- Water tracker -->
-          <div class="card" id="water-card">
-            <div class="card-title"><span class="icon">💧</span> Hydration</div>
-            <div class="water-sub" id="water-sub" style="font-size:14px;color:var(--muted);margin-bottom:16px;"></div>
-            <div class="water-row" id="water-drops" style="font-size:28px;"></div>
-            <div id="water-counter" style="font-family:var(--font-head);font-weight:600;font-size:16px;color:var(--accent2);margin-top:12px;"></div>
+          <div class="grid-4" id="profile-stats"></div>
+          <div style="margin-top:24px;" id="profile-bmi-badge"></div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">🎯 Primary Goal</div>
+            <div id="profile-goal-name" style="font-size:18px;font-weight:600;color:var(--text);"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">🥗 Diet Type</div>
+            <div id="profile-diet-name" style="font-size:18px;font-weight:600;color:var(--text);margin-bottom:4px;">
+            </div>
+            <div id="profile-diet-desc" style="font-size:13px;color:var(--muted);"></div>
           </div>
         </div>
-      </div>
-    </div>
-    <div id="diet-error" class="error-msg" style="display:none;"></div>
-  </div>
 
-  <!-- ── WORKOUT TAB ── -->
-  <div id="tab-workout" class="tab-page page" style="display:none;">
-    <span class="tag tag-accent" style="margin-bottom:12px;">Hypertrophy Program</span>
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
-      <div class="section-title" style="margin:0;">WORKOUT DATABASE</div>
-      <button class="btn btn-primary" onclick="openTimer(90)" style="width:auto; padding:12px 24px;">⏱ Rest Timer</button>
-    </div>
-
-    <!-- MUSCLE DIAGRAM -->
-    <div class="body-map-container">
-      <!-- FRONT SVG -->
-      <svg viewBox="0 0 300 450" class="body-svg">
-        <text x="150" y="20" fill="var(--muted)" font-size="12" text-anchor="middle" font-family="var(--font-head)" font-weight="700" letter-spacing="2">FRONT</text>
-        
-        <g transform="translate(0, 30)">
-          <!-- Base Outline (Head + Torso Base) -->
-          <polygon points="135,20 165,20 170,50 150,70 130,50" class="body-bg-line" />
-          <polygon points="140,70 160,70 165,90 135,90" class="body-bg-line" />
-          <polygon points="108,215 192,215 170,250 130,250" class="body-bg-line" />
-          
-          <!-- Chest -->
-          <polygon points="148,95 100,95 90,130 148,140" class="muscle-group" data-day="Chest" />
-          <polygon points="152,95 200,95 210,130 152,140" class="muscle-group" data-day="Chest" />
-          
-          <!-- Core -->
-          <polygon points="148,145 95,145 105,210 148,220" class="muscle-group" data-day="Core" />
-          <polygon points="152,145 205,145 195,210 152,220" class="muscle-group" data-day="Core" />
-          
-          <!-- Shoulders -->
-          <polygon points="95,95 70,110 60,140 85,130" class="muscle-group" data-day="Shoulders" />
-          <polygon points="205,95 230,110 240,140 215,130" class="muscle-group" data-day="Shoulders" />
-          
-          <!-- Arms (Biceps) -->
-          <polygon points="80,135 55,145 50,180 75,175" class="muscle-group" data-day="Arms" />
-          <polygon points="220,135 245,145 250,180 225,175" class="muscle-group" data-day="Arms" />
-          
-          <!-- Forearms -->
-          <polygon points="72,185 48,190 40,240 60,235" class="muscle-group" data-day="Arms" />
-          <polygon points="228,185 252,190 260,240 240,235" class="muscle-group" data-day="Arms" />
-          
-          <!-- Quads (Legs) -->
-          <polygon points="105,220 148,225 140,320 110,320 90,260" class="muscle-group" data-day="Legs" />
-          <polygon points="195,220 152,225 160,320 190,320 210,260" class="muscle-group" data-day="Legs" />
-          
-          <!-- Calves (Legs) -->
-          <polygon points="138,330 112,330 115,420 135,420" class="muscle-group" data-day="Legs" />
-          <polygon points="162,330 188,330 185,420 165,420" class="muscle-group" data-day="Legs" />
-        </g>
-      </svg>
-      
-      <!-- BACK SVG -->
-      <svg viewBox="0 0 300 450" class="body-svg">
-        <text x="150" y="20" fill="var(--muted)" font-size="12" text-anchor="middle" font-family="var(--font-head)" font-weight="700" letter-spacing="2">BACK</text>
-        
-        <g transform="translate(0, 30)">
-          <!-- Base Outline -->
-          <polygon points="135,20 165,20 170,50 150,70 130,50" class="body-bg-line" />
-          <polygon points="140,70 160,70 165,90 135,90" class="body-bg-line" />
-          <!-- Glutes placeholder -->
-          <polygon points="110,215 190,215 195,260 150,270 105,260" class="body-bg-line" />
-          
-          <!-- Back (Lats/Traps) -->
-          <polygon points="148,95 100,95 85,140 105,210 148,210" class="muscle-group" data-day="Back" />
-          <polygon points="152,95 200,95 215,140 195,210 152,210" class="muscle-group" data-day="Back" />
-          
-          <!-- Shoulders -->
-          <polygon points="95,95 70,110 60,140 85,130" class="muscle-group" data-day="Shoulders" />
-          <polygon points="205,95 230,110 240,140 215,130" class="muscle-group" data-day="Shoulders" />
-          
-          <!-- Triceps (Arms) -->
-          <polygon points="80,135 55,145 50,180 75,175" class="muscle-group" data-day="Arms" />
-          <polygon points="220,135 245,145 250,180 225,175" class="muscle-group" data-day="Arms" />
-          <polygon points="72,185 48,190 40,240 60,235" class="muscle-group" data-day="Arms" />
-          <polygon points="228,185 252,190 260,240 240,235" class="muscle-group" data-day="Arms" />
-          
-          <!-- Hamstrings (Legs) -->
-          <polygon points="105,265 148,275 140,320 110,320 105,280" class="muscle-group" data-day="Legs" />
-          <polygon points="195,265 152,275 160,320 190,320 195,280" class="muscle-group" data-day="Legs" />
-          
-          <!-- Calves (Legs) -->
-          <polygon points="138,330 112,330 115,420 135,420" class="muscle-group" data-day="Legs" />
-          <polygon points="162,330 188,330 185,420 165,420" class="muscle-group" data-day="Legs" />
-        </g>
-      </svg>
-    </div>
-
-    <!-- Active Target Heading -->
-    <div style="text-align: center; margin-bottom: 24px;">
-      <h2 id="active-muscle-title" style="font-family:var(--font-head); font-weight:800; font-size:40px; color:var(--text); letter-spacing:-1px; margin:0; line-height:1;">CHEST</h2>
-      <div style="font-size:14px; color:var(--accent); font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-top:4px;">Currently Targeted</div>
-    </div>
-
-    <!-- Equipment Filters -->
-    <div class="filter-row" id="equip-filters">
-      <button class="active" data-equip="All">All Types</button>
-      <button data-equip="Barbell">Barbell</button>
-      <button data-equip="Dumbbell">Dumbbell</button>
-      <button data-equip="Machine">Machine</button>
-      <button data-equip="Bodyweight">Bodyweight</button>
-    </div>
-
-    <div id="ex-count" style="color:var(--muted);font-size:14px;margin-bottom:16px;font-weight:500;"></div>
-    
-    <div id="exercise-list" class="grid-2"></div>
-  </div>
-
-  <!-- ── YOGA & HOME WORKOUT TAB ── -->
-  <div id="tab-yoga-home" class="tab-page page" style="display:none;">
-    <span class="tag tag-accent" style="margin-bottom:12px;">No Equipment</span>
-    <div class="section-title" style="margin:0; margin-bottom:24px;">FLEXIBILITY & HIIT</div>
-    
-    <div class="tabs-row" id="yoga-mode-tabs">
-      <button class="active" data-mode="yoga">🧘 Yoga Flows</button>
-      <button data-mode="home">🏠 Home HIIT</button>
-    </div>
-    
-    <div id="yoga-section">
-      <div class="filter-row" id="yoga-tabs">
-        <button class="active" data-flow="Morning Flow">🌅 Morning Flow</button>
-        <button data-flow="Flexibility">🤸 Flexibility</button>
-        <button data-flow="Strength Yoga">💪 Strength</button>
-        <button data-flow="Relaxation">😌 Relaxation</button>
-      </div>
-      <div id="yoga-count" style="color:var(--muted);font-size:14px;margin-bottom:16px;font-weight:500;"></div>
-      <div id="yoga-list" class="grid-2"></div>
-    </div>
-    
-    <div id="home-section" style="display:none;">
-      <div class="filter-row" id="home-tabs">
-        <button class="active" data-category="Full Body HIIT">🔥 Full Body</button>
-        <button data-category="Core Crusher">🎯 Core</button>
-        <button data-category="Upper Body">💪 Upper</button>
-        <button data-category="Lower Body">🦵 Lower</button>
-        <button data-category="Cardio Blast">🏃 Cardio</button>
-      </div>
-      <div id="home-count" style="color:var(--muted);font-size:14px;margin-bottom:16px;font-weight:500;"></div>
-      <div id="home-list" class="grid-2"></div>
-    </div>
-  </div>
-
-  <!-- ── TRACKER TAB ── -->
-  <div id="tab-tracker" class="tab-page page" style="display:none;">
-    <span class="tag tag-accent">Habits</span>
-    <div class="section-title" style="margin-top:12px;">PROGRESS TRACKER</div>
-    <div class="stat-row" id="tracker-stats"></div>
-    
-    <div class="grid-2">
-      <!-- Calendar -->
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px;">
-          <button style="background:none; border:none; color:var(--text); cursor:pointer; font-size:24px;" onclick="changeMonth(-1)">‹</button>
-          <div style="font-family:var(--font-head); font-weight:700; font-size:20px;" id="cal-month-label"></div>
-          <button style="background:none; border:none; color:var(--text); cursor:pointer; font-size:24px;" onclick="changeMonth(1)">›</button>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align:center; font-size:12px; color:var(--muted); font-weight:600; margin-bottom:12px;" id="cal-days-header">
-          <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;" id="cal-grid"></div>
-        <div style="margin-top:24px;font-size:12px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;">
-          <span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;background:rgba(57,255,20,.2);border:1px solid var(--accent);border-radius:4px;display:inline-block;"></span>Workout Done</span>
-          <span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;border:1px solid rgba(255,255,255,.3);border-radius:4px;display:inline-block;"></span>Today</span>
+        <div style="margin-top:32px;">
+          <button class="btn btn-outline" onclick="resetProfile()"
+            style="color:var(--accent3); border-color:var(--accent3);">Reset Profile & Data</button>
         </div>
       </div>
-      
-      <!-- Goals -->
-      <div class="card">
-        <div class="card-title">🎯 Weekly Target</div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <span style="font-size:15px;color:var(--muted);">Target Workouts</span>
-          <span style="font-family:var(--font-head); font-size:24px; color:var(--accent);" id="goal-display">4</span>
-        </div>
-        
-        <div style="background:rgba(255,255,255,0.05); border-radius:999px; height:16px; overflow:hidden; border:1px solid var(--border); margin:16px 0;">
-          <div id="goal-fill" style="height:100%; background:linear-gradient(90deg, var(--accent2), var(--accent)); transition:width .6s; width:0%;"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);">
-          <span id="goal-pct" style="font-weight:600; color:var(--text);">0% complete</span>
-          <span id="goal-fraction">0/4 done</span>
-        </div>
-        
-        <hr style="border:none; border-top:1px solid var(--border); margin:32px 0;" />
-        
-        <label class="form-label" style="margin-bottom:16px;">Adjust Requirement</label>
-        <input type="range" min="1" max="7" value="4" id="goal-slider" style="-webkit-appearance:none; width:100%; height:6px; background:var(--border); border-radius:3px; outline:none;" oninput="updateGoalUI(this.value)" onchange="saveGoal(this.value)" />
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:12px;font-family:var(--font-head);"><span>1 day</span><span>7 days</span></div>
+
+      <!-- BOTTOM NAV (mobile) -->
+      <nav class="bottom-nav">
+        <button class="bottom-nav-btn active" data-tab="diet"><span>🥗</span><span>Diet</span></button>
+        <button class="bottom-nav-btn" data-tab="workout"><span>🏋️</span><span>Train</span></button>
+        <button class="bottom-nav-btn" data-tab="yoga-home"><span>🧘</span><span>Yoga</span></button>
+        <button class="bottom-nav-btn" data-tab="tracker"><span>📅</span><span>Progress</span></button>
+        <button class="bottom-nav-btn" data-tab="profile"><span>👤</span><span>Profile</span></button>
+      </nav>
+    </div>
+
+    <!-- ═══════════ REST TIMER OVERLAY ═══════════ -->
+    <div id="timer-box" class="timer-box" style="display:none;">
+      <button class="timer-close" onclick="closeTimer()">✕</button>
+      <div class="timer-label">REST TIMER</div>
+      <div class="timer-num" id="timer-num">01:30</div>
+      <div class="timer-sub" id="timer-sub"
+        style="font-size:13px; font-weight:500; font-family:var(--font-body); color:var(--muted);">recovering...</div>
+
+      <div style="display:flex;gap:12px;margin-top:20px;justify-content:center;">
+        <button class="btn btn-primary" id="timer-toggle" onclick="toggleTimer()"
+          style="flex:1; padding:10px 0; font-size:14px;">⏸ Pause</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:center;">
+        <button class="btn btn-outline" onclick="resetTimer(60)"
+          style="padding:8px 16px; font-size:12px; border-radius:8px;">60s</button>
+        <button class="btn btn-outline" onclick="resetTimer(90)"
+          style="padding:8px 16px; font-size:12px; border-radius:8px;">90s</button>
+        <button class="btn btn-outline" onclick="resetTimer(120)"
+          style="padding:8px 16px; font-size:12px; border-radius:8px;">2m</button>
       </div>
     </div>
-  </div>
 
-  <!-- ── PROFILE TAB ── -->
-  <div id="tab-profile" class="tab-page page" style="display:none;">
-    <span class="tag tag-accent">Settings</span>
-    <div class="section-title" style="margin-top:12px;">YOUR PROFILE</div>
-    
-    <div class="card" style="margin-bottom:24px;">
-      <div style="display:flex;align-items:center;gap:24px;margin-bottom:32px;">
-        <div style="width:80px;height:80px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:var(--bg);font-weight:800;font-family:var(--font-head);" id="prof-initial">U</div>
-        <div>
-          <div style="font-family:var(--font-head);font-size:32px;line-height:1;" id="prof-name">User Name</div>
-          <div id="profile-sub" style="font-size:15px;color:var(--muted);margin-top:6px;"></div>
-        </div>
-      </div>
-      <div class="grid-4" id="profile-stats"></div>
-      <div style="margin-top:24px;" id="profile-bmi-badge"></div>
-    </div>
-    
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-title">🎯 Primary Goal</div>
-        <div id="profile-goal-name" style="font-size:18px;font-weight:600;color:var(--text);"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">🥗 Diet Type</div>
-        <div id="profile-diet-name" style="font-size:18px;font-weight:600;color:var(--text);margin-bottom:4px;"></div>
-        <div id="profile-diet-desc" style="font-size:13px;color:var(--muted);"></div>
-      </div>
-    </div>
-    
-    <div style="margin-top:32px;">
-      <button class="btn btn-outline" onclick="resetProfile()" style="color:var(--accent3); border-color:var(--accent3);">Reset Profile & Data</button>
-    </div>
-  </div>
-
-  <!-- BOTTOM NAV (mobile) -->
-  <nav class="bottom-nav">
-    <button class="bottom-nav-btn active" data-tab="diet"><span>🥗</span><span>Diet</span></button>
-    <button class="bottom-nav-btn" data-tab="workout"><span>🏋️</span><span>Train</span></button>
-    <button class="bottom-nav-btn" data-tab="yoga-home"><span>🧘</span><span>Yoga</span></button>
-    <button class="bottom-nav-btn" data-tab="tracker"><span>📅</span><span>Progress</span></button>
-    <button class="bottom-nav-btn" data-tab="profile"><span>👤</span><span>Profile</span></button>
-  </nav>
-</div>
-
-<!-- ═══════════ REST TIMER OVERLAY ═══════════ -->
-<div id="timer-box" class="timer-box" style="display:none;">
-  <button class="timer-close" onclick="closeTimer()">✕</button>
-  <div class="timer-label">REST TIMER</div>
-  <div class="timer-num" id="timer-num">01:30</div>
-  <div class="timer-sub" id="timer-sub" style="font-size:13px; font-weight:500; font-family:var(--font-body); color:var(--muted);">recovering...</div>
-  
-  <div style="display:flex;gap:12px;margin-top:20px;justify-content:center;">
-    <button class="btn btn-primary" id="timer-toggle" onclick="toggleTimer()" style="flex:1; padding:10px 0; font-size:14px;">⏸ Pause</button>
-  </div>
-  <div style="display:flex;gap:8px;margin-top:12px;justify-content:center;">
-    <button class="btn btn-outline" onclick="resetTimer(60)" style="padding:8px 16px; font-size:12px; border-radius:8px;">60s</button>
-    <button class="btn btn-outline" onclick="resetTimer(90)" style="padding:8px 16px; font-size:12px; border-radius:8px;">90s</button>
-    <button class="btn btn-outline" onclick="resetTimer(120)" style="padding:8px 16px; font-size:12px; border-radius:8px;">2m</button>
-  </div>
-</div>
-
-<script src="/static/js/app.js"></script>
+    <script src="/static/js/app.js?v=1.2"></script>
 </body>
+
 </html>

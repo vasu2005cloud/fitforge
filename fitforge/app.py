@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, send_from_directory
 import json, math, os, urllib.request, urllib.error
+from database import get_exercises, get_yoga_poses, get_home_workouts
 
 app = Flask(__name__)
 app.secret_key = "IronBuddy-secret-2024"
@@ -7,108 +8,123 @@ app.secret_key = "IronBuddy-secret-2024"
 # ── Exercise Data ──────────────────────────────────────────────────────────────
 EXERCISES = {
     "Chest": [
-        {"name": "Barbell Bench Press", "desc": "Lie flat, grip the barbell shoulder-width, lower to chest, press up explosively.", "diff": "intermediate", "muscles": "Pecs, Triceps", "equipment": "Barbell", "yt": "https://youtube.com/watch?v=rT7DgCr-3pg"},
-        {"name": "Incline Dumbbell Press", "desc": "Targets upper chest. Set bench to 30–45°, press dumbbells from shoulder level.", "diff": "intermediate", "muscles": "Upper Pecs, Front Delts", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=8iPEnn-ltC8"},
-        {"name": "Chest Fly", "desc": "Isolation move for maximum pec stretch. Slight elbow bend.", "diff": "beginner", "muscles": "Pectorals", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=eozdVDA78K0"},
-        {"name": "Push-ups", "desc": "Zero-equipment classic. Hands shoulder-width, lower chest to floor.", "diff": "beginner", "muscles": "Pecs, Core, Triceps", "equipment": "Bodyweight", "yt": "https://youtube.com/watch?v=IODxDxX7oi4"},
-        {"name": "Cable Crossover", "desc": "Pull the cables from high to low for lower pec activation.", "diff": "advanced", "muscles": "Lower Chest, Pectorals", "equipment": "Machine", "yt": "https://youtube.com/watch?v=taI4XduLpTk"},
+        {"name": "Barbell Bench Press", "desc": "Lie flat, grip the barbell shoulder-width, lower to chest, press up explosively.", "diff": "intermediate", "muscles": "Pecs, Triceps", "equipment": "Barbell", "yt": "https://www.youtube.com/watch?v=gRVjAtPip0Y"},
+        {"name": "Incline Dumbbell Press", "desc": "Targets upper chest. Set bench to 30–45°, press dumbbells from shoulder level.", "diff": "intermediate", "muscles": "Upper Pecs, Front Delts", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=8iPEnn-ltC8"},
+        {"name": "Chest Fly", "desc": "Isolation move for maximum pec stretch. Slight elbow bend.", "diff": "beginner", "muscles": "Pectorals", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=eozdVDA78K0"},
+        {"name": "Push-ups", "desc": "Zero-equipment classic. Hands shoulder-width, lower chest to floor.", "diff": "beginner", "muscles": "Pecs, Core, Triceps", "equipment": "Bodyweight", "yt": "https://www.youtube.com/watch?v=IODxDxX7oi4"},
+        {"name": "Cable Crossover", "desc": "Pull the cables from high to low for lower pec activation.", "diff": "advanced", "muscles": "Lower Chest, Pectorals", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=taI4XduLpTk"},
     ],
     "Back": [
-        {"name": "Pull-ups", "desc": "Overhand grip, full hang, pull until chin clears the bar cleanly.", "diff": "advanced", "muscles": "Lats, Biceps, Rhomboids", "equipment": "Bodyweight", "yt": "https://youtube.com/watch?v=eGo4IYlbE5g"},
-        {"name": "Lat Pulldown", "desc": "Wide grip, lean slightly back, pull bar down to upper chest.", "diff": "beginner", "muscles": "Latissimus Dorsi", "equipment": "Machine", "yt": "https://youtube.com/watch?v=CAwf7n6Luuc"},
-        {"name": "Barbell Deadlift", "desc": "Full posterior chain movement. Hip hinge, neutral spine.", "diff": "advanced", "muscles": "Hamstrings, Glutes, Erectors", "equipment": "Barbell", "yt": "https://youtube.com/watch?v=op9kVnSso6Q"},
-        {"name": "Seated Cable Row", "desc": "Horizontal pull for mid-back thickness. Keep elbows close.", "diff": "beginner", "muscles": "Rhomboids, Mid-Traps", "equipment": "Machine", "yt": "https://youtube.com/watch?v=GZbfZ033f74"},
-        {"name": "Dumbbell Rows", "desc": "One-arm row. Pull dumbbell to hip, squeezing lats.", "diff": "intermediate", "muscles": "Lats, Biceps", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=pYcpY20QaE8"},
+        {"name": "Pull-ups", "desc": "Overhand grip, full hang, pull until chin clears the bar cleanly.", "diff": "advanced", "muscles": "Lats, Biceps, Rhomboids", "equipment": "Bodyweight", "yt": "https://www.youtube.com/watch?v=eGo4IYlbE5g"},
+        {"name": "Lat Pulldown", "desc": "Wide grip, lean slightly back, pull bar down to upper chest.", "diff": "beginner", "muscles": "Latissimus Dorsi", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=CAwf7n6Luuc"},
+        {"name": "Barbell Deadlift", "desc": "Full posterior chain movement. Hip hinge, neutral spine.", "diff": "advanced", "muscles": "Hamstrings, Glutes, Erectors", "equipment": "Barbell", "yt": "https://www.youtube.com/watch?v=op9kVnSso6Q"},
+        {"name": "Seated Cable Row", "desc": "Horizontal pull for mid-back thickness. Keep elbows close.", "diff": "beginner", "muscles": "Rhomboids, Mid-Traps", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=GZbfZ033f74"},
+        {"name": "Dumbbell Rows", "desc": "One-arm row. Pull dumbbell to hip, squeezing lats.", "diff": "intermediate", "muscles": "Lats, Biceps", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=pYcpY20QaE8"},
     ],
     "Legs": [
-        {"name": "Barbell Squats", "desc": "Bar on traps, squat to parallel, drive knees out throughout.", "diff": "intermediate", "muscles": "Quads, Glutes, Hamstrings", "equipment": "Barbell", "yt": "https://youtube.com/watch?v=ultWZbUMPL8"},
-        {"name": "Dumbbell Lunges", "desc": "Unilateral leg builder. Step forward, lower rear knee toward floor.", "diff": "beginner", "muscles": "Quads, Glutes, Hamstrings", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=QOVaHwm-Q6U"},
-        {"name": "Leg Press", "desc": "Machine compound for legs. Feet shoulder-width.", "diff": "beginner", "muscles": "Quads, Glutes", "equipment": "Machine", "yt": "https://youtube.com/watch?v=IZxyjW7MPJQ"},
-        {"name": "Standing Calf Raises", "desc": "Rise fully onto toes, lower slowly for a complete stretch.", "diff": "beginner", "muscles": "Gastrocnemius, Soleus", "equipment": "Bodyweight", "yt": "https://youtube.com/watch?v=-M4-G8p8fmc"},
-        {"name": "Leg Extensions", "desc": "Isolate the quads using the extension machine.", "diff": "beginner", "muscles": "Quadriceps", "equipment": "Machine", "yt": "https://youtube.com/watch?v=YyvSfVjQeL0"},
+        {"name": "Barbell Squats", "desc": "Bar on traps, squat to parallel, drive knees out throughout.", "diff": "intermediate", "muscles": "Quads, Glutes, Hamstrings", "equipment": "Barbell", "yt": "https://www.youtube.com/watch?v=ultWZbUMPL8"},
+        {"name": "Dumbbell Lunges", "desc": "Unilateral leg builder. Step forward, lower rear knee toward floor.", "diff": "beginner", "muscles": "Quads, Glutes, Hamstrings", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=QOVaHwm-Q6U"},
+        {"name": "Leg Press", "desc": "Machine compound for legs. Feet shoulder-width.", "diff": "beginner", "muscles": "Quads, Glutes", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=IZxyjW7MPJQ"},
+        {"name": "Standing Calf Raises", "desc": "Rise fully onto toes, lower slowly for a complete stretch.", "diff": "beginner", "muscles": "Gastrocnemius, Soleus", "equipment": "Bodyweight", "yt": "https://www.youtube.com/watch?v=-M4-G8p8fmc"},
+        {"name": "Leg Extensions", "desc": "Isolate the quads using the extension machine.", "diff": "beginner", "muscles": "Quadriceps", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=YyvSfVjQeL0"},
     ],
     "Shoulders": [
-        {"name": "Shoulder Press", "desc": "Bar at chin, press overhead to complete extension.", "diff": "intermediate", "muscles": "All 3 Delt Heads", "equipment": "Barbell", "yt": "https://youtube.com/watch?v=2yjwXTZQDDI"},
-        {"name": "Lateral Raises", "desc": "Side delt isolation. Raise dumbbells to shoulder height.", "diff": "beginner", "muscles": "Medial Delts", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=3VcKaXpzqRo"},
-        {"name": "Front Raises", "desc": "Anterior delt isolation. arms straight, lift to eye level.", "diff": "beginner", "muscles": "Anterior Delts", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=sOoBQDGNOwE"},
-        {"name": "Face Pulls", "desc": "Use cable machine with rope to target rear delts.", "diff": "intermediate", "muscles": "Rear Delts, Traps", "equipment": "Machine", "yt": "https://youtube.com/watch?v=rep-qVOkqgk"},
+        {"name": "Shoulder Press", "desc": "Bar at chin, press overhead to complete extension.", "diff": "intermediate", "muscles": "All 3 Delt Heads", "equipment": "Barbell", "yt": "https://www.youtube.com/watch?v=2yjwXTZQDDI"},
+        {"name": "Lateral Raises", "desc": "Side delt isolation. Raise dumbbells to shoulder height.", "diff": "beginner", "muscles": "Medial Delts", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=3VcKaXpzqRo"},
+        {"name": "Front Raises", "desc": "Anterior delt isolation. arms straight, lift to eye level.", "diff": "beginner", "muscles": "Anterior Delts", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=sOoBQDGNOwE"},
+        {"name": "Face Pulls", "desc": "Use cable machine with rope to target rear delts.", "diff": "intermediate", "muscles": "Rear Delts, Traps", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=rep-qVOkqgk"},
     ],
     "Arms": [
-        {"name": "Dumbbell Bicep Curls", "desc": "Classic bicep isolation. Curl fully, squeeze hard at top.", "diff": "beginner", "muscles": "Biceps Brachii", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=ykJmrZ5v0Oo"},
-        {"name": "Tricep Dips", "desc": "Bodyweight tricep builder. Shoulders down, lower until 90°.", "diff": "intermediate", "muscles": "Triceps, Chest", "equipment": "Bodyweight", "yt": "https://youtube.com/watch?v=0326dy_-CzM"},
-        {"name": "Hammer Curls", "desc": "Neutral-grip curl targeting brachialis for thicker arms.", "diff": "beginner", "muscles": "Brachialis", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=zC3nLlEvin4"},
-        {"name": "Tricep Pushdowns", "desc": "Cable extension for triceps with rope or straight bar.", "diff": "beginner", "muscles": "Triceps", "equipment": "Machine", "yt": "https://youtube.com/watch?v=2-LAMcpzODU"},
-        {"name": "Barbell Curls", "desc": "Heavy mass builder for the biceps. Strict form.", "diff": "intermediate", "muscles": "Biceps", "equipment": "Barbell", "yt": "https://youtube.com/watch?v=kwG2ipFRgfo"},
+        {"name": "Dumbbell Bicep Curls", "desc": "Classic bicep isolation. Curl fully, squeeze hard at top.", "diff": "beginner", "muscles": "Biceps Brachii", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=ykJmrZ5v0Oo"},
+        {"name": "Tricep Dips", "desc": "Bodyweight tricep builder. Shoulders down, lower until 90°.", "diff": "intermediate", "muscles": "Triceps, Chest", "equipment": "Bodyweight", "yt": "https://www.youtube.com/watch?v=0326dy_-CzM"},
+        {"name": "Hammer Curls", "desc": "Neutral-grip curl targeting brachialis for thicker arms.", "diff": "beginner", "muscles": "Brachialis", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=zC3nLlEvin4"},
+        {"name": "Tricep Pushdowns", "desc": "Cable extension for triceps with rope or straight bar.", "diff": "beginner", "muscles": "Triceps", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=2-LAMcpzODU"},
+        {"name": "Barbell Curls", "desc": "Heavy mass builder for the biceps. Strict form.", "diff": "intermediate", "muscles": "Biceps", "equipment": "Barbell", "yt": "https://www.youtube.com/watch?v=kwG2ipFRgfo"},
     ],
     "Core": [
-        {"name": "Crunches", "desc": "Basic ab flexion. Lower back pressed to floor, lift shoulder blades.", "diff": "beginner", "muscles": "Upper Abs", "equipment": "Bodyweight", "yt": "https://youtube.com/watch?v=Xyd_fa5zoEU"},
-        {"name": "Hanging Leg Raises", "desc": "Advanced lower ab movement. Hang from bar, raise legs to 90°.", "diff": "advanced", "muscles": "Lower Abs", "equipment": "Bodyweight", "yt": "https://youtube.com/watch?v=JB2oyawG9KI"},
-        {"name": "Cable Crunches", "desc": "Weighted crunch using a cable stack. Kneel down, pull rope to head.", "diff": "intermediate", "muscles": "Abs", "equipment": "Machine", "yt": "https://youtube.com/watch?v=2-LAMcpzODU"},
-        {"name": "Russian Twists", "desc": "Oblique rotational exercise. Use a medicine ball or dumbbell.", "diff": "intermediate", "muscles": "Obliques", "equipment": "Dumbbell", "yt": "https://youtube.com/watch?v=wkD8rjkFDU"},
-        {"name": "Plank", "desc": "Static core hold. Forearms or hands, body straight like a board.", "diff": "beginner", "muscles": "Core", "equipment": "Bodyweight", "yt": "https://youtube.com/watch?v=pvIjsG5Svck"},
+        {"name": "Crunches", "desc": "Basic ab flexion. Lower back pressed to floor, lift shoulder blades.", "diff": "beginner", "muscles": "Upper Abs", "equipment": "Bodyweight", "yt": "https://www.youtube.com/watch?v=Xyd_fa5zoEU"},
+        {"name": "Hanging Leg Raises", "desc": "Advanced lower ab movement. Hang from bar, raise legs to 90°.", "diff": "advanced", "muscles": "Lower Abs", "equipment": "Bodyweight", "yt": "https://www.youtube.com/watch?v=JB2oyawG9KI"},
+        {"name": "Cable Crunches", "desc": "Weighted crunch using a cable stack. Kneel down, pull rope to head.", "diff": "intermediate", "muscles": "Abs", "equipment": "Machine", "yt": "https://www.youtube.com/watch?v=2-LAMcpzODU"},
+        {"name": "Russian Twists", "desc": "Oblique rotational exercise. Use a medicine ball or dumbbell.", "diff": "intermediate", "muscles": "Obliques", "equipment": "Dumbbell", "yt": "https://www.youtube.com/watch?v=wkD8rjkodU"},
+        {"name": "Plank", "desc": "Static core hold. Forearms or hands, body straight like a board.", "diff": "beginner", "muscles": "Core", "equipment": "Bodyweight", "yt": "https://www.youtube.com/watch?v=pvIjsG5Svck"},
     ],
 }
 
 # ── Yoga Data ──────────────────────────────────────────────────────────────────
 YOGA = {
     "Morning Flow": [
-        {"name": "Sun Salutation A", "desc": "Energizing sequence linking breath with movement. 5 rounds to awaken body and mind.", "diff": "beginner", "duration": "5 min", "yt": "https://youtube.com/watch?v=8MvQ2RzX2jU"},
-        {"name": "Cat-Cow Pose", "desc": "Spinal flexion and extension. Inhale arch back, exhale round spine. Flow with breath.", "diff": "beginner", "duration": "2 min", "yt": "https://youtube.com/watch?v=kqnua4rHVVA"},
-        {"name": "Downward Dog", "desc": "Inverted V-shape. Press heels toward ground, chest toward thighs. Hold and breathe.", "diff": "beginner", "duration": "3 min", "yt": "https://youtube.com/watch?v=j97ssG5k7iE"},
-        {"name": "Child's Pose", "desc": "Restorative pose. Knees wide, forehead on mat, arms extended. Deep belly breathing.", "diff": "beginner", "duration": "2 min", "yt": "https://youtube.com/watch?v=qYvXsFrwTkw"},
+        {"name": "Surya Namaskar (Sun Salutation)", "desc": "Energizing sequence for vitality.", "diff": "beginner", "duration": "5 min", "video": "surya-namaskar.mp4"},
+        {"name": "Marjaryasana (Cat-Cow)", "desc": "Spinal flexibility and core engagement.", "diff": "beginner", "duration": "3 min", "yt": "kqnua4rHVVA"},
+        {"name": "Anulom Vilom (Breathing)", "desc": "Traditional yogic breathing for clarity.", "diff": "beginner", "duration": "5 min", "video": "Anulom Vilom (Breathing).mp4"},
+        {"name": "Kapalbhati (Breathing Exercise)", "desc": "Energizing skull-shining breath.", "diff": "intermediate", "duration": "5 min", "video": "Kapalbhati (Breathing Exercise).mp4"},
+        {"name": "Morning Flow Sequence", "desc": "Complete AM routine to wake up.", "diff": "intermediate", "duration": "15 min", "yt": "4pKly2JojMw"},
     ],
     "Flexibility": [
-        {"name": "Pigeon Pose", "desc": "Deep hip opener. Front knee at 90°, extend back leg, fold forward over front shin.", "diff": "intermediate", "duration": "3 min", "yt": "https://youtube.com/watch?v=Flm3ZW5SrY8"},
-        {"name": "Seated Forward Fold", "desc": "Hamstring stretch. Sit with legs straight, hinge at hips, reach for toes.", "diff": "beginner", "duration": "3 min", "yt": "https://youtube.com/watch?v=iSOMx8jU7iY"},
-        {"name": "Butterfly Pose", "desc": "Groin and inner thigh stretch. Soles of feet together, knees fall open. Breathe deeply.", "diff": "beginner", "duration": "3 min", "yt": "https://youtube.com/watch?v=YbR9EjfMxXU"},
-        {"name": "Bridge Pose", "desc": "Backbend. Feet hip-width, lift hips to sky, interlace hands under back.", "diff": "beginner", "duration": "2 min", "yt": "https://youtube.com/watch?v=5lK3LqK9dG8"},
+        {"name": "Bhujangasana (Cobra Pose)", "desc": "Chest opener and spine strengthener.", "diff": "beginner", "duration": "3 min", "video": "Bhujangasana (Cobra Pose).mp4"},
+        {"name": "Paschimottanasana (Forward Bend)", "desc": "Deep hamstring and spinal stretch.", "diff": "beginner", "duration": "3 min", "video": "Paschimottanasana (Forward Bend).mp4"},
+        {"name": "Trikonasana (Triangle Pose)", "desc": "Strengthens legs and improves balance.", "diff": "beginner", "duration": "3 min", "video": "Trikonasana (Triangle Pose).mp4"},
+        {"name": "Ustrasana (Camel Pose)", "desc": "Powerful backbend and heart opener.", "diff": "intermediate", "duration": "3 min", "video": "Ustrasana (Camel Pose).mp4"},
+        {"name": "Flexibility Flow Sequence", "desc": "Deep stretching for full range of motion.", "diff": "intermediate", "duration": "20 min", "yt": "ypbKer1bSJE"},
     ],
     "Strength Yoga": [
-        {"name": "Warrior I", "desc": "Power pose. Front knee bent 90°, back leg straight, arms reaching overhead. Strong foundation.", "diff": "intermediate", "duration": "2 min", "yt": "https://youtube.com/watch?v=NQhrfydG5OQ"},
-        {"name": "Warrior II", "desc": "Open-hip warrior. Arms parallel to floor, gaze over front hand. Build leg strength.", "diff": "intermediate", "duration": "2 min", "yt": "https://youtube.com/watch?v=xlCEq5q1Xg4"},
-        {"name": "Plank", "desc": "Core stability. Shoulders over wrists, body in straight line. Hold with steady breath.", "diff": "intermediate", "duration": "2 min", "yt": "https://youtube.com/watch?v=pvIjsG5Svck"},
-        {"name": "Chair Pose", "desc": "Leg burner. Sit back into imaginary chair, arms reaching up. Thighs parallel to floor.", "diff": "intermediate", "duration": "2 min", "yt": "https://youtube.com/watch?v=_2i4EP1qK40"},
+        {"name": "Virabhadrasana I (Warrior 1)", "desc": "Builds leg power and stability.", "diff": "intermediate", "duration": "3 min", "video": "Virabhadrasana I (Warrior 1).mp4"},
+        {"name": "Virabhadrasana II (Warrior 2)", "desc": "Enhances stamina and leg strength.", "diff": "intermediate", "duration": "3 min", "video": "Virabhadrasana II (Warrior 2).mp4"},
+        {"name": "Vrikshasana (Tree Pose)", "desc": "Improves focus and single-leg balance.", "diff": "beginner", "duration": "2 min", "video": "Vrikshasana (Tree Pose).mp4"},
+        {"name": "Naukasana (Boat Pose)", "desc": "Core-focused pose for abdominal strength.", "diff": "intermediate", "duration": "2 min", "video": "Naukasana (Boat Pose).mp4"},
+        {"name": "Strength Flow Sequence", "desc": "Powerful flow to build lean muscle.", "diff": "advanced", "duration": "25 min", "yt": "ybMKN7oBSSs"},
     ],
     "Relaxation": [
-        {"name": "Legs Up Wall", "desc": "Restorative inversion. Legs vertical against wall, hips supported. Calms nervous system.", "diff": "beginner", "duration": "5 min", "yt": "https://youtube.com/watch?v=EqTjvOqPqD0"},
-        {"name": "Supine Twist", "desc": "Spinal twist. Knees to one side, arms in T-shape. Releases lower back tension.", "diff": "beginner", "duration": "3 min", "yt": "https://youtube.com/watch?v=hiia0f_5z4A"},
-        {"name": "Savasana", "desc": "Final relaxation. Lie flat on back, arms by sides. Complete surrender. Essential practice.", "diff": "beginner", "duration": "5 min", "yt": "https://youtube.com/watch?v=8GPKocOY57Y"},
+        {"name": "Balasana (Child's Pose)", "desc": "Restorative pose to calm the mind.", "diff": "beginner", "duration": "3 min", "video": "Balasana (Child's Pose).mp4"},
+        {"name": "Adho Mukha (Downward Dog)", "desc": "Full body stretch and inversion.", "diff": "beginner", "duration": "3 min", "video": "Adho Mukha (Downward Dog).mp4"},
+        {"name": "Setu Bandha (Bridge Pose)", "desc": "Strengthens back and opens chest.", "diff": "beginner", "duration": "3 min", "yt": "Z4PdGxLBnfc"},
+        {"name": "Shavasana (Corpse Pose)", "desc": "Total body relaxation and integration.", "diff": "beginner", "duration": "5 min", "yt": "zd4RPuZGRac"},
+        {"name": "Relaxation Flow Sequence", "desc": "Gentle flow for deep peace.", "diff": "beginner", "duration": "15 min", "yt": "inpok4MKVLM"},
+    ],
+    "Aerial Yoga": [
+        {"name": "Aerial Hammock Pose", "desc": "Fundamental aerial yoga position.", "diff": "beginner", "duration": "5 min", "yt": "bGUGOdOoZqU"},
+        {"name": "Inverted Hang", "desc": "Full decompression for the spine.", "diff": "intermediate", "duration": "3 min", "yt": "FhwDSBRe8LU"},
+        {"name": "Aerial Backbend", "desc": "Deep supported back extension.", "diff": "intermediate", "duration": "3 min", "yt": "UEqLtDpHiGY"},
+        {"name": "Cocoon Pose (Aerial Shavasana)", "desc": "Restorative floating relaxation.", "diff": "beginner", "duration": "5 min", "yt": "9Bhj2cn_5So"},
+        {"name": "Aerial Warrior", "desc": "Flying variation of warrior poses.", "diff": "intermediate", "duration": "4 min", "yt": "mOBpqSMjPR0"},
+        {"name": "Aerial Pigeon Pose", "desc": "Deep hip opener with hammock support.", "diff": "intermediate", "duration": "4 min", "yt": "7Phd_kV6_pE"},
+        {"name": "Aerial Forward Fold", "desc": "Inverted hamstring and back stretch.", "diff": "beginner", "duration": "3 min", "yt": "hHpUWaVuG5Q"},
+        {"name": "Aerial Splits", "desc": "Advanced flexibility in the air.", "diff": "advanced", "duration": "4 min", "yt": "Q4e3_eDSBM8"},
     ],
 }
 
 # ── Home Workouts (No Equipment) ───────────────────────────────────────────────
 HOME_WORKOUTS = {
     "Full Body HIIT": [
-        {"name": "Jumping Jacks", "desc": "Classic cardio. Jump feet wide, arms overhead. Keep core tight. 45 seconds on.", "diff": "beginner", "reps": "45 sec", "yt": "https://youtube.com/watch?v=iSSAk4XCsRA"},
-        {"name": "Burpees", "desc": "Full body explosive. Drop to plank, push-up, jump feet in, leap up. Intense cardio.", "diff": "intermediate", "reps": "15 reps", "yt": "https://youtube.com/watch?v=auBLPXO8Fww"},
-        {"name": "Mountain Climbers", "desc": "Core + cardio. Plank position, alternate driving knees to chest. Fast pace.", "diff": "beginner", "reps": "30 sec", "yt": "https://youtube.com/watch?v=nmwgirgXLYM"},
-        {"name": "Jump Squats", "desc": "Explosive legs. Squat down, explode up into jump. Soft landing, immediate next rep.", "diff": "intermediate", "reps": "20 reps", "yt": "https://youtube.com/watch?v=Azl5tkCzDcc"},
-        {"name": "High Knees", "desc": "Running in place. Drive knees to hip height, pump arms. Cardio blast.", "diff": "beginner", "reps": "30 sec", "yt": "https://youtube.com/watch?v=8opcQdC-V-U"},
+        {"name": "Jumping Jacks", "desc": "Classic cardio. Jump feet wide, arms overhead. Keep core tight. 45 seconds on.", "diff": "beginner", "reps": "45 sec", "yt": "https://www.youtube.com/watch?v=iSSAk4XCsRA"},
+        {"name": "Burpees", "desc": "Full body explosive. Drop to plank, push-up, jump feet in, leap up. Intense cardio.", "diff": "intermediate", "reps": "15 reps", "yt": "https://www.youtube.com/watch?v=auQLewI-B0w"},
+        {"name": "Mountain Climbers", "desc": "Core + cardio. Plank position, alternate driving knees to chest. Fast pace.", "diff": "beginner", "reps": "30 sec", "yt": "https://www.youtube.com/watch?v=zT-9L37ReW8"},
+        {"name": "Jump Squats", "desc": "Explosive legs. Squat down, explode up into jump. Soft landing, immediate next rep.", "diff": "intermediate", "reps": "20 reps", "yt": "https://www.youtube.com/watch?v=72BSZupbCPk"},
+        {"name": "High Knees", "desc": "Running in place. Drive knees to hip height, pump arms. Cardio blast.", "diff": "beginner", "reps": "30 sec", "yt": "https://www.youtube.com/watch?v=Z5uI6K6A1E0"},
     ],
     "Core Crusher": [
-        {"name": "Crunches", "desc": "Basic ab flexion. Lower back pressed to floor, lift shoulder blades. Controlled.", "diff": "beginner", "reps": "20 reps", "yt": "https://youtube.com/watch?v=Xyd_fa5zoEU"},
-        {"name": "Plank", "desc": "Static core hold. Forearms or hands, body straight. Squeeze glutes, breathe.", "diff": "beginner", "reps": "60 sec", "yt": "https://youtube.com/watch?v=pvIjsG5Svck"},
-        {"name": "Russian Twists", "desc": "Oblique exercise. Seated, lean back, twist torso side to side. Feet up for challenge.", "diff": "beginner", "reps": "30 reps", "yt": "https://youtube.com/watch?v=wkD8rjkFDU"},
-        {"name": "Leg Raises", "desc": "Lower abs. Lying on back, legs straight, lift to 90°. Control the descent.", "diff": "intermediate", "reps": "15 reps", "yt": "https://youtube.com/watch?v=JB2oyawG9KI"},
-        {"name": "Bicycle Crunches", "desc": "Obliques + rectus abdominis. Alternate elbow to opposite knee. Slow and controlled.", "diff": "beginner", "reps": "30 reps", "yt": "https://youtube.com/watch?v=9FGilxCbdz8"},
+        {"name": "Crunches", "desc": "Basic ab flexion. Lower back pressed to floor, lift shoulder blades. Controlled.", "diff": "beginner", "reps": "20 reps", "yt": "https://www.youtube.com/watch?v=Xyd_fa5zoEU"},
+        {"name": "Plank", "desc": "Static core hold. Forearms or hands, body straight. Squeeze glutes, breathe.", "diff": "beginner", "reps": "60 sec", "yt": "https://www.youtube.com/watch?v=pSHjTRCQxIw"},
+        {"name": "Russian Twists", "desc": "Oblique exercise. Seated, lean back, twist torso side to side. Feet up for challenge.", "diff": "beginner", "reps": "30 reps", "yt": "https://www.youtube.com/watch?v=wkD8rjkodU"},
+        {"name": "Leg Raises", "desc": "Lower abs. Lying on back, legs straight, lift to 90°. Control the descent.", "diff": "intermediate", "reps": "15 reps", "yt": "https://www.youtube.com/watch?v=JB2oyawG9KI"},
+        {"name": "Bicycle Crunches", "desc": "Obliques + rectus abdominis. Alternate elbow to opposite knee. Slow and controlled.", "diff": "beginner", "reps": "30 reps", "yt": "https://www.youtube.com/watch?v=1919eTCo6S0"},
     ],
     "Upper Body": [
-        {"name": "Push-ups", "desc": "Classic chest/triceps. Body straight, lower to ground, press back up. Many variations.", "diff": "beginner", "reps": "15 reps", "yt": "https://youtube.com/watch?v=IODxDxX7oi4"},
-        {"name": "Diamond Push-ups", "desc": "Triceps focus. Hands form diamond under chest. Elbows tuck to sides.", "diff": "intermediate", "reps": "10 reps", "yt": "https://youtube.com/watch?v=J0DnG1_S92g"},
-        {"name": "Tricep Dips (Chair)", "desc": "Use sturdy chair. Hands on edge, lower body, press up. Keep elbows back.", "diff": "beginner", "reps": "15 reps", "yt": "https://youtube.com/watch?v=6kALZikXxLc"},
-        {"name": "Inchworms", "desc": "Dynamic warm-up. Walk hands to plank, walk back to feet. Core and shoulder engagement.", "diff": "beginner", "reps": "10 reps", "yt": "https://youtube.com/watch?v=V5x9HnGfB9A"},
+        {"name": "Push-ups", "desc": "Classic chest/triceps. Body straight, lower to ground, press back up. Many variations.", "diff": "beginner", "reps": "15 reps", "yt": "https://www.youtube.com/watch?v=IODxDxX7oi4"},
+        {"name": "Diamond Push-ups", "desc": "Triceps focus. Hands form diamond under chest. Elbows tuck to sides.", "diff": "intermediate", "reps": "10 reps", "yt": "https://www.youtube.com/watch?v=J0DnG1_S92I"},
+        {"name": "Tricep Dips (Chair)", "desc": "Use sturdy chair. Hands on edge, lower body, press up. Keep elbows back.", "diff": "beginner", "reps": "15 reps", "yt": "https://www.youtube.com/watch?v=0326dy_-CzM"},
+        {"name": "Inchworms", "desc": "Dynamic warm-up. Walk hands to plank, walk back to feet. Core and shoulder engagement.", "diff": "beginner", "reps": "10 reps", "yt": "https://www.youtube.com/watch?v=ZY2nS6ad_Is"},
     ],
     "Lower Body": [
-        {"name": "Air Squats", "desc": "Bodyweight squats. Feet shoulder-width, hips back and down. Keep chest up.", "diff": "beginner", "reps": "25 reps", "yt": "https://youtube.com/watch?v=C_VtOYc6j5c"},
-        {"name": "Lunges", "desc": "Split squat. Step forward, drop back knee toward floor. Alternate legs.", "diff": "beginner", "reps": "20 reps", "yt": "https://youtube.com/watch?v=L8fvyBHUPew"},
-        {"name": "Glute Bridges", "desc": "Hip thrust on floor. Lift hips, squeeze glutes at top. No arching back.", "diff": "beginner", "reps": "20 reps", "yt": "https://youtube.com/watch?v=QQI8bP4jnjk"},
-        {"name": "Calf Raises", "desc": "Rise onto toes, lower slowly. Do on step for extra range. Hold wall for balance.", "diff": "beginner", "reps": "30 reps", "yt": "https://youtube.com/watch?v=gwLzBJYoWlI"},
-        {"name": "Wall Sit", "desc": "Static leg burner. Back against wall, knees at 90°. Hold and embrace the burn.", "diff": "beginner", "reps": "45 sec", "yt": "https://youtube.com/watch?v=-cdph8hv0O0"},
+        {"name": "Bodyweight Squats", "desc": "Leg day staple. Feet shoulder-width, squat to parallel, drive up through heels.", "diff": "beginner", "reps": "20 reps", "yt": "https://www.youtube.com/watch?v=R1v152478fI"},
+        {"name": "Lunges", "desc": "Unilateral strength. Step forward, lower until back knee nearly touches ground.", "diff": "beginner", "reps": "15 reps each", "yt": "https://www.youtube.com/watch?v=QOVaHwm-Q6U"},
+        {"name": "Glute Bridges", "desc": "Posterior chain. Lie on back, lift hips, squeeze glutes at top.", "diff": "beginner", "reps": "20 reps", "yt": "https://www.youtube.com/watch?v=wPM8icqn6H8"},
+        {"name": "Calf Raises", "desc": "Calf builder. Rise onto toes, hold, lower slowly. Use wall for balance.", "diff": "beginner", "reps": "20 reps", "yt": "https://www.youtube.com/watch?v=-M4-G8p8fmc"},
     ],
     "Cardio Blast": [
-        {"name": "Butt Kicks", "desc": "Running in place, heels touch glutes. Pump arms, quick feet.", "diff": "beginner", "reps": "45 sec", "yt": "https://youtube.com/watch?v=8opcQdC-V-U"},
-        {"name": "Skaters", "desc": "Lateral bounds. Leap side to side, touching floor. Like speed skater motion.", "diff": "beginner", "reps": "30 sec", "yt": "https://youtube.com/watch?v=1C7v29PCZyw"},
-        {"name": "Star Jumps", "desc": "Explosive X-jumps. Jump spreading arms and legs wide. Land softly.", "diff": "intermediate", "reps": "20 reps", "yt": "https://youtube.com/watch?v=1C7v29PCZyw"},
+        {"name": "High Knees", "desc": "Cardio intensity. Drive knees up rapidly, pump arms. Keep core engaged.", "diff": "beginner", "reps": "30 sec", "yt": "https://www.youtube.com/watch?v=Z5uI6K6A1E0"},
+        {"name": "Jump Rope (Imaginary)", "desc": "Cardio coordination. Mimic rope jumping, land on balls of feet.", "diff": "beginner", "reps": "45 sec", "yt": "https://www.youtube.com/watch?v=iSSAk4XCsRA"},
+        {"name": "Box Jumps (No Box)", "desc": "Explosive power. Jump as high as possible, soft landing. Use ground.", "diff": "intermediate", "reps": "15 reps", "yt": "https://www.youtube.com/watch?v=72BSZupbCPk"},
+        {"name": "Skaters", "desc": "Lateral cardio. Jump side to side, land on one leg, swing opposite arm back.", "diff": "intermediate", "reps": "20 reps", "yt": "https://www.youtube.com/watch?v=8K0tLzYfNIs"},
     ],
 }
 
@@ -146,68 +162,147 @@ def call_claude(prompt):
         data = json.loads(resp.read())
     return "".join(b.get("text", "") for b in data["content"])
 
-def generate_diet_local(name, gender, user_goal, age, weight, height, diet):
-    """Generate personalized diet plan locally without AI API."""
+def generate_diet_local(age, weight, height, diet, activity_level="Moderately Active", workout_type="Mixed Training", body_fat=None, gender="Male"):
+    """Generate personalized diet plan with advanced protein calculation."""
     bmi = calc_bmi(weight, height)
     
-    # Calculate BMR (Mifflin-St Jeor Equation)
+    # Calculate BMR (Mifflin-St Jeor Equation) - adjusted for gender
     if gender == "Female":
         bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161
     else:
         bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
     
-    tdee = bmr * 1.3 # moderately active assumption
+    # Activity multipliers
+    activity_multipliers = {
+        "Sedentary": 1.2,
+        "Lightly Active": 1.375,
+        "Moderately Active": 1.55,
+        "Very Active": 1.725
+    }
     
-    # Determine goal and adjust calories based on user_goal
-    if user_goal == "Weight Loss":
-        goal = "weight_loss" if bmi < 30 else "fat_loss"
-        target_calories = int(tdee - 500)
+    # Determine goal and adjust calories
+    if bmi < 18.5:  # Underweight - weight gain focus
+        goal = "weight_gain"
+        target_calories = int(bmr * activity_multipliers[activity_level] + 700)
+        protein_base = 1.8  # g/kg for muscle building
+    elif bmi < 22:  # Normal low end - muscle gain focus
+        goal = "muscle_gain"
+        target_calories = int(bmr * activity_multipliers[activity_level] + 300)
+        protein_base = 2.2  # g/kg for muscle gain
+    elif bmi < 25:  # Normal high end - maintenance
+        goal = "maintenance"
+        target_calories = int(bmr * activity_multipliers[activity_level])
+        protein_base = 1.0  # g/kg for maintenance
+    elif bmi < 30:  # Overweight - weight loss focus
+        goal = "weight_loss"
+        target_calories = int(bmr * activity_multipliers[activity_level] - 400)
+        protein_base = 2.0  # g/kg for fat loss
+    else:  # Obese - aggressive weight loss
+        goal = "fat_loss"
+        target_calories = int(bmr * activity_multipliers[activity_level] - 500)
+        protein_base = 2.2  # g/kg for fat loss
+    
+    # Advanced protein calculation adjustments
+    protein_adjustment = 0
+    
+    # Activity level adjustment
+    if activity_level == "Very Active":
+        protein_adjustment += 0.2
+    elif activity_level == "Sedentary":
+        protein_adjustment -= 0.1
+    
+    # Workout type adjustments
+    if workout_type == "Weight Training":
+        protein_adjustment += 0.3
+    elif workout_type == "Cardio":
+        protein_adjustment -= 0.1
+    elif workout_type == "Bodyweight Training":
+        protein_adjustment += 0.1
+    
+    # Body fat adjustment (if provided)
+    if body_fat and body_fat > 25:
+        lean_mass = weight * (1 - body_fat/100)
+        protein_g = int(lean_mass * (protein_base + protein_adjustment))
+    else:
+        protein_g = int(weight * (protein_base + protein_adjustment))
+    
+    # Ensure protein ranges
+    protein_ranges = {
+        "weight_gain": (1.8, 2.5),
+        "muscle_gain": (2.0, 2.8),
+        "maintenance": (0.8, 1.5),
+        "weight_loss": (1.8, 2.5),
+        "fat_loss": (2.0, 2.8)
+    }
+    
+    min_protein, max_protein = protein_ranges[goal]
+    protein_g = max(min_protein * weight, min(max_protein * weight, protein_g))
+    
+    # Calculate macros based on goal
+    if goal in ["weight_gain", "muscle_gain"]:
+        protein_percent = 30
+        carb_percent = 45
+        fat_percent = 25
+    elif goal in ["weight_loss", "fat_loss"]:
         protein_percent = 40
         carb_percent = 30
         fat_percent = 30
-    elif user_goal == "Muscle Gain":
-        goal = "muscle_gain" if bmi < 25 else "weight_gain"
-        target_calories = int(tdee + 300)
-        protein_percent = 35
-        carb_percent = 40
-        fat_percent = 25
-    else:
-        goal = "maintenance"
-        target_calories = int(tdee)
-        protein_percent = 30
-        carb_percent = 40
+    else:  # maintenance
+        protein_percent = 25
+        carb_percent = 45
         fat_percent = 30
-
-    # Ensure reasonable bounds
-    target_calories = max(1200, min(4000, target_calories))
     
-    # Calculate macros based on goal
-    protein_g = int((target_calories * protein_percent / 100) / 4)
-    carbs_g = int((target_calories * carb_percent / 100) / 4)
-    fat_g = int((target_calories * fat_percent / 100) / 9)
-    water_liters = round(weight * 0.035, 1)  # ~35ml per kg
+    # Calculate other macros
+    protein_calories = protein_g * 4
+    fat_calories = int((target_calories * fat_percent / 100))
+    carb_calories = target_calories - protein_calories - fat_calories
+    
+    carbs_g = int(carb_calories / 4)
+    fat_g = int(fat_calories / 9)
+    
+    # Enhanced water calculation
+    base_water = weight * 0.035  # 35ml per kg
+    activity_water = {
+        "Sedentary": 0,
+        "Lightly Active": 0.5,
+        "Moderately Active": 1.0,
+        "Very Active": 1.5
+    }
+    workout_water = {
+        "Weight Training": 0.5,
+        "Cardio": 1.0,
+        "Mixed Training": 0.75,
+        "Bodyweight Training": 0.3
+    }
+    
+    water_liters = round(base_water + activity_water[activity_level] + workout_water[workout_type], 1)
+    
+    # Ensure reasonable bounds
+    target_calories = max(1200, min(5000, target_calories))
+    water_liters = max(2.0, min(6.0, water_liters))
     
     # Personalized meal plans based on goal and diet type
     meals_db = get_personalized_meals(goal, diet, target_calories)
     
     # Goal-specific tips
     goal_tips = {
-        "weight_gain": "Focus on calorie-dense foods. Eat every 2-3 hours. Include healthy fats like nuts, avocado, and olive oil. Progressive strength training 3-4x/week.",
-        "muscle_gain": "Prioritize protein intake (1.6-2g per kg body weight). Time carbs around workouts. Include compound exercises. Sleep 7-9 hours for recovery.",
-        "maintenance": "Maintain balanced macronutrients. Listen to hunger cues. Stay consistent with meal timing. Regular health checkups recommended.",
-        "weight_loss": "High protein to preserve muscle mass. Focus on whole foods. Control portion sizes. Include both cardio and strength training.",
-        "fat_loss": "Very high protein intake. Minimize processed carbs and sugars. Time carbs around workouts only. Increase daily activity and NEAT."
+        "weight_gain": f"Focus on calorie-dense foods. Eat every 2-3 hours. Target: {protein_g}g protein daily. Include healthy fats like nuts, avocado, and olive oil. Progressive strength training 3-4x/week.",
+        "muscle_gain": f"Prioritize protein intake ({protein_g}g daily = {protein_g/weight:.1f}g/kg). Time carbs around workouts. Include compound exercises. Sleep 7-9 hours for recovery.",
+        "maintenance": f"Maintain balanced macronutrients. Protein intake: {protein_g}g daily. Listen to hunger cues. Stay consistent with meal timing. Regular health checkups recommended.",
+        "weight_loss": f"High protein ({protein_g}g daily) to preserve muscle mass. Focus on whole foods. Control portion sizes. Include both cardio and strength training.",
+        "fat_loss": f"Very high protein intake ({protein_g}g daily = {protein_g/weight:.1f}g/kg). Minimize processed carbs and sugars. Time carbs around workouts only. Increase daily activity and NEAT."
     }
     
     return {
         "totalCalories": target_calories,
         "waterLiters": water_liters,
-        "proteinG": protein_g,
+        "proteinG": int(protein_g),
         "carbsG": carbs_g,
         "fatG": fat_g,
-        "goal": user_goal,
+        "goal": goal.replace("_", " ").title(),
         "meals": meals_db,
-        "tip": f"Hey {name}, " + goal_tips.get(goal, "Eat whole foods, stay hydrated, and maintain consistency over perfection.")
+        "tip": goal_tips.get(goal, "Eat whole foods, stay hydrated, and maintain consistency over perfection."),
+        "proteinPerKg": round(protein_g/weight, 1)
     }
 
 def get_personalized_meals(goal, diet_type, target_calories):
@@ -331,40 +426,14 @@ def get_personalized_meals(goal, diet_type, target_calories):
     return base_meals.get(diet_type, {}).get(goal, base_meals["Veg"]["maintenance"])
 
 def generate_diet(name, gender, user_goal, age, weight, height, diet):
-    bmi = calc_bmi(weight, height)
-    rules = {
-        "Veg":     "STRICTLY vegetarian. No meat, fish, or eggs. Include dairy and plant proteins.",
-        "Non-Veg": "Can include chicken, fish, eggs, and dairy.",
-        "Jain":    "STRICTLY Jain. NO onion, garlic, potato, or any root vegetables. No meat, fish, eggs. Use lentils, beans, dairy, above-ground vegetables only.",
-    }
-    prompt = f"""You are a certified nutritionist. Generate a personalized daily diet plan in JSON format.
-
-User: {name}, Gender: {gender}, Goal: {user_goal}, Age: {age}yr, Weight: {weight}kg, Height: {height}cm, BMI: {bmi}, Diet: {diet}
-Rules: {rules[diet]}
-
-Respond ONLY with valid JSON (no markdown):
-{{
-  "totalCalories": number,
-  "waterLiters": number,
-  "proteinG": number,
-  "carbsG": number,
-  "fatG": number,
-  "meals": {{
-    "breakfast":    {{"name":"","description":"","calories":0}},
-    "morningSnack": {{"name":"","description":"","calories":0}},
-    "lunch":        {{"name":"","description":"","calories":0}},
-    "eveningSnack": {{"name":"","description":"","calories":0}},
-    "dinner":       {{"name":"","description":"","calories":0}}
-  }},
-  "tip": "one personalized tip"
-}}"""
-    try:
-        raw = call_claude(prompt)
-        raw = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
-        return json.loads(raw)
-    except Exception:
-        # Fallback to local generator if API fails
-        return generate_diet_local(name, gender, user_goal, age, weight, height, diet)
+    """Generate personalized diet plan using local algorithm with advanced parameters."""
+    # Extract activity level, workout type, and body fat from user data if available
+    # Default to moderate activity and mixed training for backward compatibility
+    activity_level = "Moderately Active"
+    workout_type = "Mixed Training"
+    body_fat = None
+    
+    return generate_diet_local(age, weight, height, diet, activity_level, workout_type, body_fat, gender)
 
 # ── Routes ─────────────────────────────────────────────────────────────────────
 @app.route("/")
@@ -412,17 +481,27 @@ def diet_plan():
 @app.route("/api/exercise-plan", methods=["GET"])
 def exercise_plan():
     day = request.args.get("day", "Chest")
-    return jsonify({"day": day, "exercises": EXERCISES.get(day, [])})
+    exercises = get_exercises(category=day)
+    return jsonify({"day": day, "exercises": exercises})
 
 @app.route("/api/yoga-plan", methods=["GET"])
 def yoga_plan():
     flow = request.args.get("flow", "Morning Flow")
-    return jsonify({"flow": flow, "poses": YOGA.get(flow, [])})
+    poses = get_yoga_poses(flow_category=flow)
+    return jsonify({"flow": flow, "poses": poses})
+
+@app.route('/static/videos/<filename>')
+def serve_video(filename):
+    return send_from_directory(
+        os.path.join(app.root_path, 'static', 'videos'),
+        filename
+    )
 
 @app.route("/api/home-workout", methods=["GET"])
 def home_workout():
     category = request.args.get("category", "Full Body HIIT")
-    return jsonify({"category": category, "exercises": HOME_WORKOUTS.get(category, [])})
+    workouts = get_home_workouts(category=category)
+    return jsonify({"category": category, "exercises": workouts})
 
 @app.route("/api/calendar", methods=["GET"])
 def get_calendar():
