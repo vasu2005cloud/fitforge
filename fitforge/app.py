@@ -5,6 +5,11 @@ from database import get_exercises, get_yoga_poses, get_home_workouts
 app = Flask(__name__)
 app.secret_key = "IronBuddy-secret-2024"
 
+# Serve static files for Vercel
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('static', filename)
+
 # ── Exercise Data ──────────────────────────────────────────────────────────────
 EXERCISES = {
     "Chest": [
@@ -529,4 +534,4 @@ def set_goal():
     return jsonify({"goal": session["weekly_goal"]})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=2000)
+    app.run(debug=False, port=2000)
