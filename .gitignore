@@ -11,3 +11,8 @@ env.bak/
 venv.bak/
 .env
 .flaskenv
+*.db
+*.sqlite
+*.sqlite3
+fitforge/__pycache__/
+fitforge/*.db

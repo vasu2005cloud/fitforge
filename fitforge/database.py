@@ -8,8 +8,11 @@ import json
 import os
 from contextlib import contextmanager
 
-# Database path
-DB_PATH = os.path.join(os.path.dirname(__file__), 'ironbuddy.db')
+# Database path - use /tmp for Vercel serverless environment
+if os.environ.get('VERCEL'):
+    DB_PATH = '/tmp/ironbuddy.db'
+else:
+    DB_PATH = os.path.join(os.path.dirname(__file__), 'ironbuddy.db')
 
 @contextmanager
 def get_db_connection():
@@ -383,3 +386,12 @@ if __name__ == "__main__":
     populate_yoga()
     populate_home_workouts()
     print("\n✨ Database setup complete!")
+
+# Auto-initialize database for Vercel
+try:
+    init_database()
+    populate_exercises()
+    populate_yoga()
+    populate_home_workouts()
+except Exception as e:
+    print(f"Database initialization error: {e}")
